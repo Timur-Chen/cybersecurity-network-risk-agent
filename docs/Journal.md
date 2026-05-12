@@ -1,13 +1,16 @@
+New-Item -ItemType Directory -Path "docs" -Force | Out-Null
+
+@'
 # Project Report – Step 1
 
-## Cybersecurity Network Risk Analyzer Agent
+# Cybersecurity Network Risk Analyzer Agent
 
 **Submission stage:** Step 1 – 24.04
 
-| Field | Information                                                    |
-|---|----------------------------------------------------------------|
-| Student | Temur Tursunboev                                               |
-| Project type | Python-based AI/agent software system                          |
+| Field | Information |
+|---|---|
+| Student | Temur Tursunboev |
+| Project type | Python-based AI/agent software system |
 | GitHub repository | https://github.com/Timur-Chen/cybersecurity-network-risk-agent |
 
 ---
@@ -34,6 +37,10 @@ The agent will classify detected services into risk levels such as low, medium, 
 
 In this way, the tool will provide technical scan data, while the agent will interpret the data and turn it into a useful cybersecurity report. This makes the system more than a simple scanner because it provides explanations and recommendations instead of only displaying raw results.
 
+The agent will use a rule-based expert-system approach for risk classification. Detected ports and services from the Nmap XML parser will be compared with a predefined cybersecurity risk rule set. Each rule will include a risk level, numeric score, explanation, and recommendation. The agent will choose the highest relevant risk score to calculate the overall risk level and will generate recommendations based on the matched service rules. This makes the AI component an intelligent decision-making layer that interprets raw scan data instead of only displaying it.
+
+I can make the AI / agent approach clearer by specifying that the agent will use a rule-based expert-system method for decision-making. After the Nmap XML Parser Tool extracts open ports and services, the agent will compare each detected service with a predefined cybersecurity rule table. Each rule will contain the port number, service name, risk level, numeric score, explanation, and recommendation. For example, Telnet on port 23 will be classified as Critical because it is unencrypted, SSH on port 22 will be classified as Medium because it can be targeted by brute-force attacks, and MySQL on port 3306 will be classified as High because database services should not usually be exposed publicly. The agent will use the matched rules to generate recommendations and will calculate the overall risk level based on the highest detected risk score.
+
 ---
 
 ## 3. List of Tools That Will Be Used in the System
@@ -56,6 +63,8 @@ The Risk Rule Tool will map detected ports and services to risk levels and secur
 
 The Report Writer Tool will save the final result in a structured format, such as JSON or a text report. This will make the output easier to review, store, and compare. The report will contain the main findings, risk levels, explanations, recommendations, and an overall conclusion.
 
+The raw scan data will be in Nmap XML format. The Nmap Scan Tool will use Nmap’s XML output option, and the XML result will then be processed by the Nmap XML Parser Tool into structured Python data such as host address, open ports, protocols, service names, and port states.
+
 ---
 
 ## 4. Preliminary List of Programming Concepts Required
@@ -77,6 +86,8 @@ The project will require several programming concepts and software development p
 - Git and GitHub for version control;
 - documentation through README and journal files.
 
+The project will use Python’s built-in `argparse` library for handling command-line input. This library will allow the user to run the program with arguments such as `--file` for an existing Nmap XML scan result or `--target` for a safe live scan target. The `argparse` module will also help validate that the user provides the correct type of input and will display helpful usage instructions if the command is incorrect.
+
 ---
 
 ## 5. Current Progress
@@ -94,9 +105,9 @@ At this stage, the project is in the planning phase. The GitHub repository has b
 | List of tools that will be used in the system | Yes |
 | Preliminary list of programming concepts required | Yes |
 
-
-
+---
 
 ## Step 1 Evaluation Result
 
 The Step 1 planning submission was evaluated on MISK.lv and received 19/20 points. The feedback stated that the project goal, agent-based approach, and programming concepts were clear. The main suggested improvement for the next stage is to further elaborate the implementation details of the Risk Rule Tool and explain how it will be populated and managed.
+'@ | Set-Content -Path "docs\journal.md" -Encoding UTF8
