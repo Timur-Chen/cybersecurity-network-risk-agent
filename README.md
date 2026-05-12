@@ -200,18 +200,30 @@ At Step 1, the repository contains the planning documentation. The source code, 
 
 Current submission stage:
 
-    Step 1 – Project planning
+    Step 2 – First working implementation
 
-This stage includes:
+The project has moved from planning to implementation. The repository now contains the first working version of the Cybersecurity Network Risk Analyzer Agent.
 
-- planned system description,
-- project goal,
-- agent-based approach,
-- planned tools,
-- preliminary programming concepts.
+The current implementation can:
 
-Implementation, testing, deployment preparation, and final documentation will be added in the next stages.
+- accept an existing Nmap XML scan result file;
+- validate the input file;
+- parse open ports and detected services;
+- classify detected services using predefined cybersecurity risk rules;
+- generate explanations and recommendations;
+- calculate an overall risk level;
+- display a readable command-line summary;
+- save the final result as a JSON report.
 
+The main working command is:
+
+`python src/main.py --file examples/sample_scan.xml`
+
+The system also supports a no-save mode:
+
+`python src/main.py --file examples/sample_scan.xml --no-save`
+
+Optional safe live scanning support has been prepared through the Nmap Scan Tool, but the primary safe mode is still scan-file analysis using Nmap XML files.
 ## Planned Technologies
 
 The planned technologies are:
