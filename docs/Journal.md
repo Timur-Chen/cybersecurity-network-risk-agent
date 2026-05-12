@@ -110,4 +110,145 @@ At this stage, the project is in the planning phase. The GitHub repository has b
 ## Step 1 Evaluation Result
 
 The Step 1 planning submission was evaluated on MISK.lv and received 19/20 points. The feedback stated that the project goal, agent-based approach, and programming concepts were clear. The main suggested improvement for the next stage is to further elaborate the implementation details of the Risk Rule Tool and explain how it will be populated and managed.
-'@ | Set-Content -Path "docs\journal.md" -Encoding UTF8
+
+
+
+---
+
+# Step 2 – 08.05
+
+## 1. Updated Description of the System Based on Implementation Progress
+
+At this stage, the project has moved from the planning phase to the first working implementation. The basic Python project structure has been created, and the main components of the Cybersecurity Network Risk Analyzer Agent have been implemented.
+
+The current version of the system can receive an existing Nmap XML scan result file as input, validate the file, parse the scan data, identify open ports and detected services, classify the services by risk level, and generate a structured cybersecurity risk report.
+
+The system now works as a local command-line application. A user can run the program with a command such as:
+
+```bash
+python src/main.py --file examples/sample_scan.xml
+```
+---
+
+# Step 2 – 08.05
+
+## 1. Updated Description of the System Based on Implementation Progress
+
+At this stage, the project has moved from the planning phase to the first working implementation. The basic Python project structure has been created, and the main components of the **Cybersecurity Network Risk Analyzer Agent** have been implemented.
+
+The current version of the system can receive an existing Nmap XML scan result file as input, validate the file, parse the scan data, identify open ports and detected services, classify the services by risk level, and generate a structured cybersecurity risk report.
+
+The system now works as a local command-line application. A user can run the program with this command:
+
+`python src/main.py --file examples/sample_scan.xml`
+
+The system also supports a `--no-save` option if the user wants to display the result without saving a report file.
+
+The current implementation focuses mainly on scan-file analysis. This is the safest and most controlled mode because it allows the system to be developed and demonstrated using sample Nmap XML files without scanning external systems.
+
+An optional safe live scan mode has also been prepared through the Nmap Scan Tool. This mode is restricted to localhost or private IP addresses only. Public IP addresses are rejected by the validation logic to reduce the risk of unauthorized scanning.
+
+The system currently includes:
+
+- a command-line interface in `main.py`;
+- a central agent class in `agent.py`;
+- an Nmap XML Parser Tool in `tools/xml_parser.py`;
+- an optional safe Nmap Scan Tool in `tools/nmap_tool.py`;
+- a Risk Rule Tool in `risk_rules.py`;
+- validation utilities in `utils/validators.py`;
+- a Report Writer Tool in `utils/report_writer.py`;
+- a sample Nmap XML file in `examples/sample_scan.xml`;
+- a `requirements.txt` file for dependencies.
+
+The first working version has already been manually checked by running the system with the sample XML file. The program correctly detected SSH, HTTP, and MySQL services, classified their risk levels, calculated the overall risk as **High**, and generated a structured result.
+
+---
+
+## 2. Refined List of Programming Concepts Actually Used
+
+The programming concepts and libraries actually used in the implementation are:
+
+- modular programming;
+- object-oriented programming;
+- command-line argument handling with `argparse`;
+- XML parsing with `xml.etree.ElementTree`;
+- file path handling with `pathlib`;
+- dictionaries and lists for structured data;
+- input validation;
+- error handling with exceptions;
+- rule-based expert-system logic;
+- JSON report generation with `json`;
+- date and time handling with `datetime`;
+- optional external tool execution with `subprocess`;
+- external command availability checking with `shutil`;
+- Git and GitHub version control;
+- basic dependency management through `requirements.txt`.
+
+---
+
+## 3. Explanation of How These Concepts Are Applied in the Project
+
+Modular programming is used by separating the system into different files and folders. The command-line interface is placed in `main.py`, the main agent workflow is placed in `agent.py`, risk classification logic is placed in `risk_rules.py`, tool modules are placed in the `tools` folder, and utility modules are placed in the `utils` folder.
+
+Object-oriented programming is used through the `CybersecurityRiskAgent` class. This class coordinates the main workflow of the system. It receives user input indirectly from the command-line interface, calls the required tools, processes the parsed scan data, applies risk rules, and builds the final report.
+
+Command-line argument handling is implemented with Python's built-in `argparse` library. The user can provide an XML scan result file using the `--file` argument. The program also supports the `--no-save` option to display output without writing a report file. The optional `--target` argument is prepared for safe live scanning.
+
+XML parsing is implemented with Python's built-in `xml.etree.ElementTree` library. The XML Parser Tool reads Nmap XML data and extracts the target address, open ports, protocols, service names, products, and port states. The parser then converts raw XML into Python dictionaries and lists.
+
+File handling is implemented with `pathlib`. The validation utility checks whether the provided file exists, whether it is a real file, whether it has the `.xml` extension, and whether it is not empty.
+
+Dictionaries and lists are used to represent structured scan data. For example, each detected open service is stored as a dictionary containing the host, port, protocol, state, service name, and product. The final report is also represented as a dictionary before it is displayed and saved.
+
+Input validation is used in two areas. First, XML file input is validated before parsing. Second, optional live scan targets are validated to allow only localhost or private IP addresses. This supports safe and ethical use of the system.
+
+Error handling is used to prevent the program from crashing without explanation. Invalid file paths, empty files, unsupported file types, broken XML content, missing Nmap installation, and unsafe live scan targets are handled with clear error messages.
+
+Rule-based expert-system logic is used in the Risk Rule Tool. The system contains a predefined rule dictionary where common ports and services are mapped to risk levels, numeric scores, explanations, and recommendations. This directly addresses the Step 1 feedback that the Risk Rule Tool should be explained and developed more clearly.
+
+JSON report generation is implemented with the `json` library. The Report Writer Tool saves the final cybersecurity risk analysis as a structured JSON file inside the `reports` folder.
+
+The optional Nmap Scan Tool uses `subprocess` to call the external Nmap command-line tool if live scanning is used. It also uses `shutil.which()` to check whether Nmap is installed and available in the system PATH.
+
+Git and GitHub are used for version control. The project has been developed through separate commits so that the implementation progress is visible.
+
+---
+
+## 4. Description of How Tools Are Integrated Into the System
+
+The tools are integrated through the central agent workflow.
+
+The first important tool is the **Nmap XML Parser Tool**. When the user provides an XML scan result file, the agent calls this parser. The parser validates and reads the XML file, extracts only open services, and converts the raw XML into structured Python data. This gives the agent a clean internal format to work with.
+
+The second tool is the **Risk Rule Tool**. After the parser returns the detected services, the agent sends each service to the risk analysis logic. The Risk Rule Tool compares each open port with a predefined risk rule dictionary. Each rule contains a risk level, numeric score, reason, and recommendation. For example, port `22` is classified as Medium risk because SSH is commonly targeted by brute-force attempts, while port `3306` is classified as High risk because database services should not usually be exposed publicly.
+
+The third tool is the **Report Writer Tool**. After the agent creates the final result, this tool saves the report as a JSON file. The report contains the detected services, risk information, overall risk score, conclusion, and original input information.
+
+The optional fourth tool is the **Nmap Scan Tool**. If live scanning is used later, this tool will call the external Nmap command-line program and return XML output. That XML output will then be passed to the same XML Parser Tool, which keeps the internal data format consistent.
+
+The agent connects all these tools together. The user does not need to manually parse XML, classify risks, or write reports. The agent controls the process and converts technical scan data into a meaningful cybersecurity report.
+
+---
+
+## 5. Step 2 Current Result
+
+The current Step 2 implementation demonstrates that the system is no longer only a planned concept. It has a working command-line interface, working tool integration, a functioning risk rule system, structured output, and report generation.
+
+The main working command is:
+
+`python src/main.py --file examples/sample_scan.xml`
+
+The current implementation successfully analyzes the sample scan file and produces a risk report for detected SSH, HTTP, and MySQL services.
+
+The next stage will focus on formal testing, including functional tests, tool tests, input validation tests, error handling tests, and test scenarios with expected results.
+
+---
+
+## Step 2 Requirement Checklist
+
+| Requirement | Included in this report |
+|---|---|
+| Updated description of the system based on implementation progress | Yes |
+| Refined list of programming concepts actually used | Yes |
+| Explanation of how these concepts are applied in the project | Yes |
+| Description of how tools are integrated into the system | Yes |
