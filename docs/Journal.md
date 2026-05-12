@@ -1,66 +1,95 @@
+# Project Report – Step 1
 
-```markdown
-# Project Journal
+## Cybersecurity Network Risk Analyzer Agent
 
-## Step 1 – 24.04
+**Submission stage:** Step 1 – 24.04
 
-### Planned System and Goal
+| Field | Information                                                    |
+|---|----------------------------------------------------------------|
+| Student | Temur Tursunboev                                               |
+| Project type | Python-based AI/agent software system                          |
+| GitHub repository | https://github.com/Timur-Chen/cybersecurity-network-risk-agent |
 
-The planned system is a **Cybersecurity Network Risk Analyzer Agent**. The goal of the system is to help users understand possible cybersecurity risks by analyzing network scan results. The system will focus on open ports and detected services and will generate a structured risk analysis with explanations and recommendations.
-In many real network environments, open services may create security risks if they are misconfigured, outdated, or exposed to users who should not have access. For this reason, the system will not only list detected ports, but will also explain what the detected services may mean from a security point of view.
-The planned system will be implemented in Python and will be prepared as a local command-line application. The user will provide either an existing Nmap scan result file or, if implemented safely, a target such as localhost or an authorized private lab address. The system will then process the scan data and return a clear report.
-The project is intended only for defensive and educational use. It will not be used for unauthorized scanning. The system will be tested with sample scan files, localhost, or private lab environments where permission is available.
+---
 
-### AI or Agent-Based Approach
+## 1. Short Description of the Planned System and Its Goal
 
-The project will use an agent-based approach. A central agent will control the workflow of the system. The agent will receive the user input, validate it, call the required tool, process the returned scan data, and generate a final cybersecurity risk report.
+The planned system is a Cybersecurity Network Risk Analyzer Agent. The purpose of this project is to create a Python-based agent system that helps users understand possible cybersecurity risks by analyzing network scan results.
 
-The external tool will provide technical data such as host information, open ports, service names, and port states. However, raw scan data alone is often difficult for a beginner or non-specialist user to understand. The agent will add value by interpreting this technical information and converting it into understandable conclusions.
-The agent will classify detected services into risk levels such as low, medium, high, or critical. It will also generate explanations and recommendations. For example, if the scan result shows an open Telnet service, the agent should classify it as a serious risk because Telnet does not provide encrypted communication. If the scan result shows an open SSH service, the agent may classify it as medium risk and recommend strong authentication and limited access.
-The main idea is that the tool collects or provides technical scan data, while the agent interprets that data and turns it into practical security guidance.
+The system will focus mainly on open ports and detected network services. In a real network, an open port does not automatically mean that a system is unsafe. However, some services can become risky if they are misconfigured, outdated, or exposed to users who should not have access. Because of this, the planned system will not only list detected ports, but will also explain what those findings may mean from a security point of view.
 
-### Planned Tools
+The user will provide either an existing Nmap scan result file or, if implemented safely later, a target such as localhost or an authorized private lab address. The system will process the scan data and return a structured cybersecurity risk report. The report will include detected services, risk levels, explanations, recommendations, and an overall conclusion.
 
-The main planned tool is an **Nmap-based scan or scan-result processing tool**.
-The planned tools are:
+The system is intended only for defensive and educational use. It will be developed and tested with sample scan files, localhost, or private lab environments where permission is available. The project is not intended for unauthorized scanning or offensive security activity.
 
-1. **Nmap Scan Tool**
+---
 
-   This tool may be used to run a safe scan on localhost or an authorized private lab target. The purpose of this tool is to collect network scan data in a structured format. If live scanning is included, it will be limited to safe and permitted environments.
+## 2. Description of the AI or Agent-Based Approach
 
-2. **Nmap XML Parser Tool**
+The project will use an agent-based approach. A central agent will control the main workflow of the system. The agent will receive the user input, validate it, call the required tool, process the returned scan data, and generate the final risk report.
 
-   This tool will process existing Nmap XML scan result files. It will extract useful information such as open ports, detected services, protocols, and port states. This mode is important because it allows the system to be tested safely without scanning external systems.
+The external tool will provide technical information such as host data, open ports, service names, protocols, and port states. Raw scan output is useful, but it can be difficult to understand for a beginner or for a user who is not familiar with cybersecurity terminology. The role of the agent is to interpret this technical data and convert it into practical guidance.
 
-3. **Risk Rule Tool**
+The agent will classify detected services into risk levels such as low, medium, high, or critical. It will also generate explanations and recommendations based on the detected services. For example, if the scan result shows an open Telnet service, the agent should classify it as a serious risk because Telnet does not use encrypted communication. If SSH is detected, the agent may classify it as medium risk and recommend strong authentication and restricted access. If a database service such as MySQL or PostgreSQL is detected, the agent may classify it as high risk if it appears exposed.
 
-   This tool will map detected ports and services to risk levels and recommendations. For example, services such as Telnet, FTP, MySQL, PostgreSQL, or RDP may require more attention depending on how they are exposed and configured.
+In this way, the tool will provide technical scan data, while the agent will interpret the data and turn it into a useful cybersecurity report. This makes the system more than a simple scanner because it provides explanations and recommendations instead of only displaying raw results.
 
-4. **Report Writer Tool**
+---
 
-   This tool will save the final result in a structured format, such as JSON or a text report. This will make the output easier to review, store, and compare.
+## 3. List of Tools That Will Be Used in the System
 
-The initial development will focus on scan-file analysis using sample Nmap XML files. Optional live scanning may be added later only for localhost or authorized lab targets.
+The main planned tool is an Nmap-based scan or scan-result processing tool. The system may support both scan-file analysis and optional safe live scanning.
 
-### Preliminary Programming Concepts Required
+### 3.1 Nmap Scan Tool
 
-The project will require several programming concepts and software development practices.
+The Nmap Scan Tool may be used to run a safe scan on localhost or an authorized private lab target. The purpose of this tool is to collect network scan data in a structured format. If this mode is implemented, it will only be used in safe and permitted environments.
 
-The preliminary concepts include:
+### 3.2 Nmap XML Parser Tool
 
-- Python functions for implementing tool behavior,
-- object-oriented programming for the main agent class,
-- modular programming to separate the agent, tools, utilities, and tests,
-- command-line input handling,
-- file handling for reading scan result files and writing reports,
-- XML parsing for processing Nmap output,
-- dictionaries and lists for storing structured scan data,
-- input validation for checking file paths, file types, and target values,
-- error handling for invalid files, unsupported formats, or parsing problems,
-- subprocess usage if live Nmap scanning is implemented,
-- JSON or text report generation,
-- automated testing with pytest,
-- Git and GitHub for version control,
+The Nmap XML Parser Tool will process existing Nmap XML scan result files. It will extract useful information from the scan result, including host address, open ports, protocols, service names, and port states. This tool is important because it allows the system to be developed and tested safely without scanning external systems.
+
+### 3.3 Risk Rule Tool
+
+The Risk Rule Tool will map detected ports and services to risk levels and security recommendations. For example, services such as Telnet, FTP, MySQL, PostgreSQL, or RDP may require more attention depending on how they are exposed and configured. This tool will help the agent decide whether a detected service should be considered low, medium, high, or critical risk.
+
+### 3.4 Report Writer Tool
+
+The Report Writer Tool will save the final result in a structured format, such as JSON or a text report. This will make the output easier to review, store, and compare. The report will contain the main findings, risk levels, explanations, recommendations, and an overall conclusion.
+
+---
+
+## 4. Preliminary List of Programming Concepts Required
+
+The project will require several programming concepts and software development practices. The preliminary concepts are listed below:
+
+- Python functions for implementing separate tool behavior;
+- object-oriented programming for the main agent class;
+- modular programming for separating the agent, tools, utilities, tests, and documentation;
+- command-line input handling;
+- file handling for reading scan result files and writing reports;
+- XML parsing for processing Nmap scan output;
+- dictionaries and lists for storing structured scan data;
+- input validation for checking file paths, file types, and possible target values;
+- error handling for invalid files, unsupported formats, or XML parsing problems;
+- subprocess usage if live Nmap scanning is implemented;
+- JSON or text report generation;
+- automated testing with pytest in later stages;
+- Git and GitHub for version control;
 - documentation through README and journal files.
 
-At this stage, the project is in the planning phase. The next stage will focus on creating the Python project structure and implementing the first working components of the system.
+---
+
+## 5. Current Progress
+
+At this stage, the project is in the planning phase. The GitHub repository has been created, and the Step 1 planning documentation has been added. The next stage will focus on creating the Python project structure and implementing the first working components of the system.
+
+---
+
+## Step 1 Requirement Checklist
+
+| Requirement | Included in this report |
+|---|---|
+| Short description of the planned system and its goal | Yes |
+| Description of the AI or agent-based approach | Yes |
+| List of tools that will be used in the system | Yes |
+| Preliminary list of programming concepts required | Yes |
