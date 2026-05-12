@@ -1,7 +1,8 @@
 from typing import Any
 
 from risk_rules import analyze_service_risk, calculate_overall_risk
-from tools.xml_parser import parse_nmap_xml_file
+from tools.xml_parser import parse_nmap_xml_file, parse_nmap_xml_string
+from tools.nmap_tool import run_safe_nmap_scan
 from utils.report_writer import save_report
 
 
@@ -34,6 +35,20 @@ class CybersecurityRiskAgent:
         """
         scan_data = parse_nmap_xml_file(file_path)
         return self._build_report(scan_data, input_type="scan_file", input_value=file_path)
+
+    def analyze_target(self, target: str) -> dict[str, Any]:
+        """
+        Run a safe Nmap scan and analyze the result.
+
+        Args:
+            target: Localhost or private IP address.
+
+        Returns:
+            Final structured cybersecurity risk report.
+        """
+        xml_output = run_safe_nmap_scan(target)
+        scan_data = parse_nmap_xml_string(xml_output)
+        return self._build_report(scan_data, input_type="live_scan", input_value=target)
 
     def _build_report(
         self,

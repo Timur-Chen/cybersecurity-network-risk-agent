@@ -16,10 +16,16 @@ def create_argument_parser() -> argparse.ArgumentParser:
         description="Cybersecurity Network Risk Analyzer Agent"
     )
 
-    parser.add_argument(
+    input_group = parser.add_mutually_exclusive_group(required=True)
+
+    input_group.add_argument(
         "--file",
-        required=True,
         help="Path to an existing Nmap XML scan result file.",
+    )
+
+    input_group.add_argument(
+        "--target",
+        help="Safe target for optional live scan. Only localhost or private IPs are allowed.",
     )
 
     parser.add_argument(
@@ -40,6 +46,7 @@ def print_summary(result: dict[str, Any]) -> None:
     """
     print("\nCybersecurity Network Risk Analyzer Agent")
     print("-" * 50)
+    print(f"Input type: {result['input_type']}")
     print(f"Target: {result['target']}")
     print(f"Open ports found: {result['open_port_count']}")
     print(f"Overall risk level: {result['overall_risk']['overall_level']}")
@@ -74,7 +81,10 @@ def main() -> None:
     agent = CybersecurityRiskAgent(save_reports=not args.no_save)
 
     try:
-        result = agent.analyze_scan_file(args.file)
+        if args.file:
+            result = agent.analyze_scan_file(args.file)
+        else:
+            result = agent.analyze_target(args.target)
     except Exception as error:
         print(f"Error: {error}")
         raise SystemExit(1)
