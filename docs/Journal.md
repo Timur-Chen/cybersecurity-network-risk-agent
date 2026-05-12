@@ -93,3 +93,10 @@ At this stage, the project is in the planning phase. The GitHub repository has b
 | Description of the AI or agent-based approach | Yes |
 | List of tools that will be used in the system | Yes |
 | Preliminary list of programming concepts required | Yes |
+
+
+
+
+## Step 1 Evaluation Result
+
+The Step 1 planning submission was evaluated on MISK.lv and received 19/20 points. The feedback stated that the project goal, agent-based approach, and programming concepts were clear. The main suggested improvement for the next stage is to further elaborate the implementation details of the Risk Rule Tool and explain how it will be populated and managed.
