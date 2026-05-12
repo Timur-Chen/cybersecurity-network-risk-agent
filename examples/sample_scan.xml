@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nmaprun scanner="nmap" args="nmap -sV -oX sample_scan.xml 127.0.0.1">
+    <host>
+        <status state="up" reason="localhost-response"/>
+        <address addr="127.0.0.1" addrtype="ipv4"/>
+        <ports>
+            <port protocol="tcp" portid="22">
+                <state state="open" reason="syn-ack"/>
+                <service name="ssh" product="OpenSSH"/>
+            </port>
+            <port protocol="tcp" portid="80">
+                <state state="open" reason="syn-ack"/>
+                <service name="http" product="Apache httpd"/>
+            </port>
+            <port protocol="tcp" portid="3306">
+                <state state="open" reason="syn-ack"/>
+                <service name="mysql" product="MySQL"/>
+            </port>
+        </ports>
+    </host>
+</nmaprun>
