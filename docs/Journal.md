@@ -45,7 +45,7 @@ I can make the AI / agent approach clearer by specifying that the agent will use
 
 ## 3. List of Tools That Will Be Used in the System
 
-The main planned tool is an Nmap-based scan or scan-result processing tool. The system may support both scan-file analysis and optional safe live scanning.
+The main planned tool is a Nmap-based scan or scan-result processing tool. The system may support both scan-file analysis and optional safe live scanning.
 
 ### 3.1 Nmap Scan Tool
 
@@ -152,7 +152,7 @@ The system currently includes:
 
 - a command-line interface in `main.py`;
 - a central agent class in `agent.py`;
-- an Nmap XML Parser Tool in `tools/xml_parser.py`;
+- a Nmap XML Parser Tool in `tools/xml_parser.py`;
 - an optional safe Nmap Scan Tool in `tools/nmap_tool.py`;
 - a Risk Rule Tool in `risk_rules.py`;
 - validation utilities in `utils/validators.py`;
@@ -252,3 +252,195 @@ The next stage will focus on formal testing, including functional tests, tool te
 | Refined list of programming concepts actually used | Yes |
 | Explanation of how these concepts are applied in the project | Yes |
 | Description of how tools are integrated into the system | Yes |
+
+
+---
+
+# Step 3 – 15.05
+
+## 1. Description of the Testing Process
+
+At this stage, the project testing process was added and performed using the `pytest` framework. The purpose of testing was to verify that the main parts of the Cybersecurity Network Risk Analyzer Agent work correctly both individually and together.
+
+Testing was performed after the first working implementation had already been created in Step 2. The tests were organized in a separate `tests` folder to keep the project structure clean and understandable.
+
+The testing process focused on five main areas:
+
+- XML parser functionality;
+- risk rule classification logic;
+- input validation and safety checks;
+- main agent workflow;
+- JSON report generation.
+
+The tests were executed from the command line using:
+
+`python -m pytest`
+
+The current test result was:
+
+`16 passed in 0.12s`
+
+This means that all implemented automated tests passed successfully. The result shows that the main workflow and core tools are working as expected for the tested scenarios.
+
+The testing process was not limited to only one part of the project. Instead, it included both unit-style tests for individual functions and workflow tests for checking how multiple components work together.
+
+---
+
+## 2. List and Explanation of Test Scenarios
+
+The following test scenarios were created and executed.
+
+### 2.1 XML Parser Test
+
+The XML parser test checks whether the system can correctly read the sample Nmap XML file located in `examples/sample_scan.xml`.
+
+The test verifies that:
+
+- the target address is extracted correctly;
+- the number of open ports is counted correctly;
+- open services such as SSH, HTTP, and MySQL are detected;
+- port numbers such as 22, 80, and 3306 are extracted correctly.
+
+This test is important because the XML parser is the first tool in the main analysis workflow. If the parser does not work correctly, the agent cannot perform accurate risk analysis.
+
+### 2.2 Risk Rule Tool Tests
+
+The Risk Rule Tool tests check whether detected ports are classified with the correct risk levels.
+
+The test scenarios include:
+
+- MySQL on port 3306 is classified as High risk;
+- Telnet on port 23 is classified as Critical risk;
+- an unknown port receives the default Low risk classification;
+- the overall risk level is calculated based on the highest detected risk score;
+- an empty findings list returns a Low overall risk result.
+
+These tests are important because the Risk Rule Tool is the main decision-making part of the agent. It transforms technical scan data into risk levels, explanations, and recommendations.
+
+### 2.3 Validation Tests
+
+The validation tests check whether the system correctly accepts valid input and rejects invalid or unsafe input.
+
+The test scenarios include:
+
+- a valid XML file is accepted;
+- a missing XML file is rejected;
+- a file with the wrong extension is rejected;
+- an empty XML file is rejected;
+- localhost target `127.0.0.1` is accepted;
+- private IP addresses are accepted;
+- public IP addresses such as `8.8.8.8` are rejected.
+
+These tests are important because the project is intended for defensive and educational use only. Input validation helps prevent invalid files, unsafe live scan targets, and uncontrolled behavior.
+
+### 2.4 Agent Workflow Tests
+
+The agent workflow tests check whether the central `CybersecurityRiskAgent` class correctly coordinates the system.
+
+The test scenarios verify that:
+
+- the agent can analyze the sample Nmap XML file;
+- the target address is included in the final result;
+- the number of detected open ports is correct;
+- the overall risk level is calculated as High;
+- expected services such as SSH, HTTP, and MySQL are included in the final findings;
+- no report file is saved when the agent is created with `save_reports=False`.
+
+These tests are important because they check the connection between the parser, risk rules, and final report structure.
+
+### 2.5 Report Writer Test
+
+The report writer test checks whether the system can save a structured JSON report file.
+
+The test verifies that:
+
+- a JSON report file is created;
+- the saved file has the `.json` extension;
+- the saved data can be loaded back with the `json` library;
+- important report fields such as agent name, target, and overall risk level are preserved correctly.
+
+This test is important because the generated report is one of the main outputs of the system.
+
+---
+
+## 3. Deployment Preparation
+
+The current version of the system is prepared as a local command-line Python application. It does not require a web server, cloud platform, or database for the current stage.
+
+Another user can run the project in a controlled environment by following these steps:
+
+1. Clone the GitHub repository.
+2. Open the project folder.
+3. Install the required dependencies.
+4. Run the command-line application with a sample Nmap XML file.
+5. Optionally run the automated tests.
+
+The repository includes a `requirements.txt` file. At this stage, the main external Python dependency is `pytest`, which is used for testing.
+
+Example setup commands:
+
+`git clone https://github.com/Timur-Chen/cybersecurity-network-risk-agent.git`
+
+`cd cybersecurity-network-risk-agent`
+
+`python -m pip install -r requirements.txt`
+
+Example run command:
+
+`python src/main.py --file examples/sample_scan.xml`
+
+Example command without saving a JSON report:
+
+`python src/main.py --file examples/sample_scan.xml --no-save`
+
+Example test command:
+
+`python -m pytest`
+
+The primary recommended deployment mode is local execution. This is suitable because the project is a command-line cybersecurity analysis tool intended for controlled educational and defensive use.
+
+Optional live scanning requires Nmap to be installed on the user’s machine. However, the main safe mode is still XML scan-file analysis. This allows the system to be demonstrated and tested without scanning external systems.
+
+---
+
+## 4. Data Conversion and Porting
+
+The system uses data transformation during its workflow. The input starts as a Nmap XML scan result file and is gradually converted into structured data that the agent can analyze.
+
+The data flow is:
+
+Nmap XML file → XML Parser Tool → Python dictionaries and lists → Risk Rule Tool → final JSON report
+
+The XML Parser Tool uses Python’s built-in `xml.etree.ElementTree` library to read the Nmap XML file. It extracts useful scan information such as:
+
+- target address;
+- open ports;
+- protocols;
+- port states;
+- service names;
+- detected products.
+
+After parsing, the scan data is converted into Python dictionaries and lists. Each detected service is stored as a dictionary containing information such as host, port, protocol, state, service name, and product.
+
+The Risk Rule Tool then adds security interpretation to this structured data. It maps each detected port or service to a predefined rule containing:
+
+- risk level;
+- numeric score;
+- explanation;
+- recommendation.
+
+After risk classification, the final result is stored as a Python dictionary. The Report Writer Tool then converts this final dictionary into JSON format and saves it as a report file.
+
+This conversion process helps preserve correctness and consistency because each stage uses a clear data format. Raw XML is not analyzed directly by the risk rules. Instead, it is first converted into a predictable internal Python structure, which makes the agent workflow easier to test and maintain.
+
+---
+
+## Step 3 Requirement Checklist
+
+| Requirement | Included in this report |
+|---|---|
+| Description of the testing process | Yes |
+| List and explanation of test scenarios | Yes |
+| Short explanation of deployment preparation | Yes |
+| Short explanation of data conversion or porting | Yes |
+| Automated test result included | Yes |
