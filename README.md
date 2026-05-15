@@ -17,7 +17,7 @@ The system is planned to help users who may not fully understand technical scan 
 The planned system should be able to:
 
 - receive user input,
-- process an Nmap scan result,
+- process a Nmap scan result,
 - identify open ports and detected services,
 - classify possible cybersecurity risks,
 - generate explanations and recommendations,
@@ -58,7 +58,7 @@ The agent will not simply repeat the scan result. Its role will be to transform 
 
 ## Planned Tool Usage
 
-The main planned tool is an Nmap-based scan or scan-result processing tool.
+The main planned tool is a Nmap-based scan or scan-result processing tool.
 
 ### 1. Nmap Scan Tool
 
@@ -276,3 +276,64 @@ Each important development stage will be committed and pushed separately to show
 ## Status
 
 This project is currently in the planning phase. The next stage will focus on creating the Python project structure and implementing the first working components of the system.
+
+## Testing
+
+Automated testing has been added in Step 3 using `pytest`.
+
+The test suite checks the main components of the system:
+
+- Nmap XML parsing;
+- risk rule classification;
+- input validation;
+- public IP rejection for optional live scanning;
+- main agent workflow;
+- JSON report generation.
+
+To run the tests:
+
+`python -m pytest`
+
+Current test result:
+
+`16 passed`
+
+## Deployment Preparation
+
+The system is prepared as a local command-line Python application. It does not require cloud deployment or a web server for the current version.
+
+To run the project on another machine:
+
+1. Clone the repository.
+2. Open the project folder.
+3. Install dependencies from `requirements.txt`.
+4. Run the command-line application with a sample Nmap XML file.
+
+Example setup and run commands:
+
+`git clone https://github.com/Timur-Chen/cybersecurity-network-risk-agent.git`
+
+`cd cybersecurity-network-risk-agent`
+
+`python -m pip install -r requirements.txt`
+
+`python src/main.py --file examples/sample_scan.xml`
+
+To run without saving a JSON report:
+
+`python src/main.py --file examples/sample_scan.xml --no-save`
+
+The primary recommended mode is XML scan-file analysis. Optional live scanning requires Nmap to be installed and is restricted to localhost or private IP addresses only.
+
+## Data Conversion
+
+The system transforms data through several controlled steps:
+
+1. The input starts as a Nmap XML scan result file.
+2. The XML Parser Tool reads the XML file using `xml.etree.ElementTree`.
+3. The parser extracts open ports, protocols, service names, products, port states, and target information.
+4. The extracted data is converted into Python dictionaries and lists.
+5. The Risk Rule Tool adds risk levels, numeric scores, explanations, and recommendations.
+6. The final report is generated as structured JSON.
+
+This data flow keeps the scan information consistent and easier to analyze.
